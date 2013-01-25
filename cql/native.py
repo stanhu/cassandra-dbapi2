@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from warnings import warn
 import cql
 from cql.marshal import (int32_pack, int32_unpack, uint16_pack, uint16_unpack,
                          int8_pack, int8_unpack)
@@ -850,6 +851,8 @@ class NativeConnection(Connection):
     def terminate_connection(self):
         self.socketf.close()
         self.sockfd.close()
+        self.sockfd = None
+        self.socketf = None
 
     def wait_for_request(self, msg):
         """
@@ -861,7 +864,11 @@ class NativeConnection(Connection):
 
     def send_msg(self, msg):
         reqid = self.make_reqid()
-        msg.send(self.socketf, reqid, compression=self.compressor)
+        try:
+            msg.send(self.socketf, reqid, compression=self.compressor)
+        except socket.error:
+            self.open_socket = False
+            raise
         return reqid
 
     def wait_for_requests(self, *msgs):
@@ -1036,3 +1043,7 @@ class NativeConnection(Connection):
             self.wait_for_result(None)
         for wlist in wlists:
             wlist.remove(i_saw_an_event)
+
+    def is_open(self):
+        """Standard test for whether a Connection is open. Used by ConnectionPool. Note not currently using timeouts so not entirely reliable"""
+        return self.open_socket and (self.socketfd is not None) and (self.socketf is not None)

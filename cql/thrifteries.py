@@ -180,3 +180,6 @@ class ThriftConnection(Connection):
 
     def terminate_connection(self):
         self.transport.close()
+
+    def is_open(self):
+        return self.open_socket and (self.transport is not None) and self.transport.isOpen()

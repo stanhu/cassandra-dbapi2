@@ -1,3 +1,10 @@
+1.4.1 - 2013/01/24
+ * First patch to make ConnectionPool work again.
+ * Added python2to3 compatibility for ConnectionPool.__str__()
+ * Made connection pools use context managers.
+ * Added is_open() and close() methods to both kinds of connections
+ * Changed connection pool to take a connector, providing more flexbility with connection strategies
+
 1.4.0 - 2012/10/19
  * Update for recent CQL3 protocol changes (CASSANDRA-4734)
  * Open the provided transport if it isn't already
