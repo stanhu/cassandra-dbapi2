@@ -17,7 +17,7 @@
 from cql.apivalues import ProgrammingError, NotSupportedError
 
 class Connection(object):
-    cql_major_version = 2
+    cql_major_version = 3
 
     def __init__(self, host, port, keyspace, user=None, password=None, cql_version=None,
                  compression=None, consistency_level="ONE", transport=None):
