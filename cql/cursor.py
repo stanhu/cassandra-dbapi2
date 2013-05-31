@@ -64,7 +64,7 @@ class Cursor:
 
     def prepare_inline(self, query, params):
         try:
-            return prepare_inline(query, params)
+            return prepare_inline(query, params, self.cql_major_version)
         except KeyError, e:
             raise cql.ProgrammingError("Unmatched named substitution: " +
                                        "%s not given for %r" % (e, query))

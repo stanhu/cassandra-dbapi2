@@ -59,7 +59,7 @@ class PreparedQuery(object):
     def encode_params(self, params):
         return [t.to_binary(t.validate(params[n])) for (n, t) in zip(self.paramnames, self.vartypes)]
 
-def prepare_inline(query, params):
+def prepare_inline(query, params, cql_major_version=3):
     """
     For every match of the form ":param_name", call cql_quote
     on kwargs['param_name'] and replace that section of the query
@@ -67,7 +67,7 @@ def prepare_inline(query, params):
     """
 
     def param_replacer(match):
-        return match.group(1) + cql_quote(params[match.group(2)])
+        return match.group(1) + cql_quote(params[match.group(2)], cql_major_version)
     return replace_param_substitutions(query, param_replacer)
 
 def prepare_query(querytext):
@@ -80,11 +80,13 @@ def prepare_query(querytext):
     transformed_query = replace_param_substitutions(querytext, found_param)
     return transformed_query, paramnames
 
-def cql_quote(term):
+def cql_quote(term, cql_major_version=3):
     if isinstance(term, unicode):
         return "'%s'" % __escape_quotes(term.encode('utf8'))
-    elif isinstance(term, (str, bool)):
+    elif isinstance(term, str):
         return "'%s'" % __escape_quotes(str(term))
+    elif isinstance(term, bool) and cql_major_version == 2:
+        return "'%s'" % str(term)
     else:
         return str(term)
 
