@@ -62,9 +62,12 @@ class Cursor:
         self.name_info = None
         self.column_types = None
 
+    def get_cql_quote_predicate(self):
+        return getattr(self._connection, 'cql_quote_predicate', None)
+
     def prepare_inline(self, query, params):
         try:
-            return prepare_inline(query, params)
+            return prepare_inline(query, params, quote_predicate=self.get_cql_quote_predicate())
         except KeyError, e:
             raise cql.ProgrammingError("Unmatched named substitution: " +
                                        "%s not given for %r" % (e, query))

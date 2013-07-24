@@ -1,3 +1,6 @@
+1.4.2 - 2013/04/23
+ * Patches to deal with DSE 3.1 vs. DSE 3.0 compatibility in a more transparent fashion
+
 1.4.1 - 2013/01/24
  * First patch to make ConnectionPool work again.
  * Added python2to3 compatibility for ConnectionPool.__str__()

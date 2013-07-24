@@ -40,6 +40,7 @@ class ThriftCursor(Cursor):
 
         cl_in_protocol = parent_connection.remote_thrift_version >= MIN_THRIFT_FOR_CL_IN_PROTOCOL
         self.use_cql3_methods = cl_in_protocol and self.cql_major_version == 3
+        self.cql_quote_predicate = cql3_quote if self.use_cql3_methods else cql_quote
 
     def compress_query_text(self, querytext):
         if self.compression == 'GZIP':
@@ -162,8 +163,7 @@ class ThriftConnection(Connection):
             self.set_cql_version(self.cql_version)
 
     def set_cql_version(self, cql_version):
-        if self.remote_thrift_version < MIN_THRIFT_FOR_CL_IN_PROTOCOL:
-            self.client.set_cql_version(cql_version)
+        self.client.set_cql_version(cql_version)
         try:
             self.cql_major_version = int(cql_version.split('.')[0])
         except ValueError:
@@ -174,7 +174,7 @@ class ThriftConnection(Connection):
         if self.cql_major_version >= 3:
             ksname = cql_quote_name(keyspace)
         else:
-            ksname = cql_quote(keyspace)
+            ksname = self.cql_quote_predicate(keyspace)
         c.execute('USE %s' % ksname)
         c.close()
 
