@@ -42,6 +42,9 @@ class ThriftCursor(Cursor):
         self.use_cql3_methods = cl_in_protocol and self.cql_major_version == 3
         self.cql_quote_predicate = cql3_quote if self.use_cql3_methods else cql_quote
 
+    def get_cql_quote_predicate(self):
+        return self.cql_quote_predicate
+
     def compress_query_text(self, querytext):
         if self.compression == 'GZIP':
             compressed_q = zlib.compress(querytext)

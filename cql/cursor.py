@@ -63,7 +63,7 @@ class Cursor:
         self.column_types = None
 
     def get_cql_quote_predicate(self):
-        return getattr(self, 'cql_quote_predicate', None)
+        return None
 
     def prepare_inline(self, query, params):
         try:
