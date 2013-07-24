@@ -90,7 +90,7 @@ def cql3_quote(term):
     elif isinstance(term, str):
         return "'%s'" % __escape_quotes(str(term))
     elif isinstance(term, bool):
-        return "'%s'" % str(term)
+        return "%s" % str(term)
     else:
         return str(term)
 
