@@ -17,7 +17,7 @@
 import zlib
 import cql
 from cql.cursor import Cursor, _VOID_DESCRIPTION, _COUNT_DESCRIPTION
-from cql.query import cql_quote, cql_quote_name, prepare_query, PreparedQuery
+from cql.query import cql_quote, cql3_quote, cql_quote_name, prepare_query, PreparedQuery
 from cql.connection import Connection
 from cql.cassandra import Cassandra
 from thrift.Thrift import TApplicationException
