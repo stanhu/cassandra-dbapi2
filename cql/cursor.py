@@ -17,6 +17,9 @@
 import cql
 from cql.decoders import SchemaDecoder
 from cql.query import prepare_inline
+import logging
+
+logger = logging.getLogger(__name__)
 
 _COUNT_DESCRIPTION = (None, None, None, None, None, None, None)
 _VOID_DESCRIPTION = None
@@ -80,6 +83,7 @@ class Cursor:
         self.pre_execution_setup()
         prepared_q = self.prepare_inline(cql_query, params)
         cl = consistency_level or self.consistency_level
+        logger.debug('Executing: %s with consistency level %s', prepared_q, consistency_level)
         response = self.get_response(prepared_q, cl)
         return self.process_execution_results(response, decoder=decoder)
 
@@ -89,6 +93,7 @@ class Cursor:
         # instance to be used for decoding. bad naming, but it's in use now.
         self.pre_execution_setup()
         cl = consistency_level or self.consistency_level
+        logger.debug('Executing prepared query %s with params %s and consistency level %s', prepared_query, params, cl)
         response = self.get_response_prepared(prepared_query, params, cl)
         return self.process_execution_results(response, decoder=decoder)
 
