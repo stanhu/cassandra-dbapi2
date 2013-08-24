@@ -258,7 +258,7 @@ class _CassandraType(object):
             >>> LongType.cass_parameterized_type_with((), full=True)
             'org.apache.cassandra.db.marshal.LongType'
             >>> SetType.cass_parameterized_type_with([DecimalType], full=True)
-            'org.apache.cassandra.db.marshal.SetType(org.apache.cassandra.db.marshal.DecimalType)' 
+            'org.apache.cassandra.db.marshal.SetType(org.apache.cassandra.db.marshal.DecimalType)'
         """
 
         cname = cls.cassname
@@ -481,6 +481,11 @@ class DateType(_CassandraType):
     @staticmethod
     def serialize(timestamp):
         return int64_pack(timestamp * 1000)
+
+
+class TimestampType(DateType):
+    pass
+
 
 class TimeUUIDType(DateType):
     typename = 'timeuuid'
