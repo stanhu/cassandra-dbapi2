@@ -202,4 +202,4 @@ class Cursor:
 
     def __checksock(self):
         if self._connection is None or not self._connection.open_socket:
-            raise cql.ProgrammingError("Cursor has been closed.")
+            raise cql.ConnectionError("Cursor has been closed.")

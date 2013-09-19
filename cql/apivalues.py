@@ -27,15 +27,16 @@ class Error  (exceptions.StandardError):
 
 class InterfaceError(Error): pass
 class DatabaseError (Error): pass
+class CommunicationError(Error): pass
 
 class DataError        (DatabaseError): pass
-class OperationalError (DatabaseError): pass
+class OperationalError (CommunicationError): pass
 class IntegrityError   (DatabaseError): pass
 class InternalError    (DatabaseError): pass
 class ProgrammingError (DatabaseError): pass
 class NotSupportedError(DatabaseError): pass
 class NotAuthenticated (DatabaseError): pass
-
+class ConnectionError  (CommunicationError): pass
 
 # Module constants
 
