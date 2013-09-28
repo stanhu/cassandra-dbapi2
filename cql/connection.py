@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cql.apivalues import ProgrammingError, NotSupportedError
+from cql.apivalues import NotSupportedError, ConnectionError
 
 class Connection(object):
     cql_major_version = 3
@@ -92,7 +92,7 @@ class Connection(object):
 
     def cursor(self):
         if not self.open_socket:
-            raise ProgrammingError("Connection has been closed.")
+            raise ConnectionError("Connection has been closed.")
         curs = self.cursorclass(self)
         curs.compression = self.compression
         curs.consistency_level = self.consistency_level

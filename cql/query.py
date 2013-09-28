@@ -59,15 +59,18 @@ class PreparedQuery(object):
     def encode_params(self, params):
         return [t.to_binary(t.validate(params[n])) for (n, t) in zip(self.paramnames, self.vartypes)]
 
-def prepare_inline(query, params, cql_major_version=3):
+def prepare_inline(query, params, quote_predicate=None):
     """
     For every match of the form ":param_name", call cql_quote
     on kwargs['param_name'] and replace that section of the query
     with the result
     """
 
+    if quote_predicate is None:
+        quote_predicate = DEFAULT_QUOTE_PREDICATE
+
     def param_replacer(match):
-        return match.group(1) + cql_quote(params[match.group(2)], cql_major_version)
+        return match.group(1) + quote_predicate(params[match.group(2)])
     return replace_param_substitutions(query, param_replacer)
 
 def prepare_query(querytext):
@@ -80,15 +83,27 @@ def prepare_query(querytext):
     transformed_query = replace_param_substitutions(querytext, found_param)
     return transformed_query, paramnames
 
-def cql_quote(term, cql_major_version=3):
+def cql3_quote(term):
+    '''Quote things as per the cql3 spec.'''
     if isinstance(term, unicode):
         return "'%s'" % __escape_quotes(term.encode('utf8'))
     elif isinstance(term, str):
         return "'%s'" % __escape_quotes(str(term))
-    elif isinstance(term, bool) and cql_major_version == 2:
-        return "'%s'" % str(term)
+    elif isinstance(term, bool):
+        return "%s" % str(term)
     else:
         return str(term)
+
+def cql_quote(term):
+    '''Quote things as per... prior to the cql3 spec.'''
+    if isinstance(term, unicode):
+        return "'%s'" % __escape_quotes(term.encode('utf8'))
+    elif isinstance(term, (str, bool)):
+        return "'%s'" % __escape_quotes(str(term))
+    else:
+        return str(term)
+
+DEFAULT_QUOTE_PREDICATE=cql_quote
 
 def __escape_quotes(term):
     assert isinstance(term, basestring)
